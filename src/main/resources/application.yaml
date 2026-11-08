@@ -1,0 +1,48 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+
+spring:
+  application:
+    name: muze
+  threads:
+    virtual:
+      enabled: true # Java 21 Project Loom virtual threads for ultra-high WebSocket concurrency
+  web:
+    resources:
+      cache:
+        period: 0
+        cachecontrol:
+          no-cache: true
+          must-revalidate: true
+
+# Muze Synchronization Engine Parameters
+muze:
+  sync:
+    drift-tolerance-ms: 40    # |Drift| < 40ms: In-band perceptual sync lock
+    soft-drift-limit-ms: 400   # 40ms - 400ms: Dynamic rate nudge (1.02x / 0.98x)
+    # > 400ms: Hard seek snap
+  security:
+    jwt:
+      secret: "MuzeSharedSecretKeyForTestingAndLocalDevelopmentMustBeAtLeast256BitsLong"
+      expiration-ms: 86400000  # 24 hours
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.muze: DEBUG
