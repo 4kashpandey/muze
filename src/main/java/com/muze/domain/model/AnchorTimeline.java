@@ -16,6 +16,7 @@ public record AnchorTimeline(
     long epochSequence
 ) {
     public static AnchorTimeline initial() {
+
         return new AnchorTimeline(0L, 0L, 1.0, PlaybackStatus.PAUSED, 1L);
     }
 
