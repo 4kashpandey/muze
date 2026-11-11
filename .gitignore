@@ -31,3 +31,15 @@ build/
 
 ### VS Code ###
 .vscode/
+# Environment & Secrets
+.env
+*.env.local
+
+# Build & Dependencies
+target/
+*.class
+
+# IDE & OS Garbage
+.idea/
+*.iml
+.DS_Store
