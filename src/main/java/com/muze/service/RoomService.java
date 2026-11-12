@@ -55,7 +55,7 @@ public class RoomService {
             String passcode
     ) {
         String roomId = generateUniqueRoomId();
-        TrackMetadata initialTrack = resolveTrackMetadata(initialTrackId);
+        TrackMetadata initialTrack = resolveTrack(initialTrackId);
 
         String trackId = initialTrack != null ? initialTrack.id() : null;
         String trackUrl = initialTrack != null ? initialTrack.effectiveStreamUrl() : null;
@@ -95,6 +95,10 @@ public class RoomService {
         return roomRepository.findById(roomId);
     }
 
+    public Room getRoomOrThrow(String roomId) {
+        return getRoom(roomId).orElseThrow(() -> new NoSuchElementException("Room not found: " + roomId));
+    }
+
     public List<ActiveRoomSummaryDto> getActiveRooms() {
         return roomRepository.findAll().stream()
                 .map(room -> {
@@ -115,38 +119,148 @@ public class RoomService {
                 .toList();
     }
 
-    private TrackMetadata resolveTrackMetadata(String trackId) {
+    public TrackMetadata resolveTrack(String trackId) {
         if (trackId != null && !trackId.isBlank()) {
             return audiusService.getTrackById(trackId).orElse(null);
         }
         return null;
     }
 
-    public synchronized void leaveRoom(String roomId, String userId) {
+    public Participant joinRoom(String roomId, String userId, String username, boolean isGuest) {
+        Room room = getRoomOrThrow(roomId);
+        Participant participant = room.addParticipant(userId, username, isGuest);
+        log.info("User [{}] '{}' (guest={}) joined room [{}] with role [{}]",
+                userId, username, isGuest, roomId, participant.role());
+        return participant;
+    }
+
+    public Participant joinRoom(String roomId, String userId, String username) {
+        boolean guest = (username != null && username.startsWith("Guest-"));
+        return joinRoom(roomId, userId, username, guest);
+    }
+
+    public synchronized Optional<Participant> leaveRoom(String roomId, String userId) {
         Optional<Room> roomOpt = roomRepository.findById(roomId);
         if (roomOpt.isEmpty()) {
-            return;
+            return Optional.empty();
         }
 
         Room room = roomOpt.get();
-        room.removeParticipant(userId);
-        log.info("User [{}] left room [{}]. Remaining participants: {}", userId, roomId, room.getParticipants().size());
+        Optional<Participant> newHost = room.removeParticipant(userId);
+        log.info("User [{}] left room [{}]", userId, roomId);
 
-        // Check if any verified (non-guest) members remain
-        boolean hasVerifiedMember = room.getParticipants().stream()
-                .anyMatch(p -> !p.isGuest());
+        // A room must have at least one authorized verified member to continue existing.
+        boolean hasAuthorizedPerson = room.getParticipants().stream().anyMatch(p -> !p.isGuest());
 
-        // Auto-cleanup: destroy room if completely empty or no verified members remain
-        if (room.isEmpty() || !hasVerifiedMember) {
+        if (room.isEmpty() || !hasAuthorizedPerson) {
             roomRepository.deleteById(roomId);
-            log.info("Room [{}] terminated and cleaned up (no verified members remaining).", roomId);
+            log.info("Room [{}] ended: either empty or contains no authorized verified members remaining. Pruned.", roomId);
+            return Optional.empty();
+        } else if (newHost.isPresent()) {
+            log.info("Leader election in room [{}]: verified member [{}] '{}' is promoted to new HOST.",
+                    roomId, newHost.get().userId(), newHost.get().username());
+        }
+        return newHost;
+    }
+
+    // --- Playback Control Directives ---
+
+    public AnchorTimeline executePlay(String roomId, String userId) {
+        Room room = getRoomOrThrow(roomId);
+        validateAuthority(room, userId, "PLAY");
+        if (room.getCurrentTrackUrl() == null) {
+            log.warn("Room [{}] executePlay skipped: no track loaded", roomId);
+            return room.getTimeline();
+        }
+        long now = clockSyncService.getCurrentServerEpochMs();
+        AnchorTimeline updated = room.play(now);
+        commandProcessedCounter.increment();
+        log.info("Room [{}] PLAY at server time {} (epoch: {})", roomId, now, updated.epochSequence());
+        return updated;
+    }
+
+    public AnchorTimeline executePause(String roomId, String userId) {
+        Room room = getRoomOrThrow(roomId);
+        validateAuthority(room, userId, "PAUSE");
+        long now = clockSyncService.getCurrentServerEpochMs();
+        AnchorTimeline updated = room.pause(now);
+        commandProcessedCounter.increment();
+        log.info("Room [{}] PAUSE at server time {} (pos: {} ms, epoch: {})", roomId, now, updated.anchorPositionMs(), updated.epochSequence());
+        return updated;
+    }
+
+    public AnchorTimeline executeSeek(String roomId, String userId, long seekTargetMs) {
+        Room room = getRoomOrThrow(roomId);
+        validateAuthority(room, userId, "SEEK");
+        long now = clockSyncService.getCurrentServerEpochMs();
+        AnchorTimeline updated = room.seek(seekTargetMs, now);
+        commandProcessedCounter.increment();
+        log.info("Room [{}] SEEK to {} ms at server time {} (epoch: {})", roomId, seekTargetMs, now, updated.epochSequence());
+        return updated;
+    }
+
+    public AnchorTimeline executeSelectTrack(String roomId, String userId, TrackMetadata track, boolean autoplay) {
+        Room room = getRoomOrThrow(roomId);
+        validateAuthority(room, userId, "SELECT_TRACK");
+        long now = clockSyncService.getCurrentServerEpochMs();
+        AnchorTimeline updated = room.selectTrack(track, now, autoplay);
+        commandProcessedCounter.increment();
+        log.info("Room [{}] selected track [{}] '{}' (autoplay: {}, epoch: {})",
+                roomId, track.id(), track.title(), autoplay, updated.epochSequence());
+        return updated;
+    }
+
+    public AnchorTimeline executeSelectTrack(String roomId, String userId, String trackId, boolean autoplay) {
+        TrackMetadata track = resolveTrack(trackId);
+        return executeSelectTrack(roomId, userId, track, autoplay);
+    }
+
+    // --- Song Queue Operations ---
+
+    public QueuedTrack enqueueTrack(String roomId, String userId, TrackMetadata track, String username) {
+        Room room = getRoomOrThrow(roomId);
+        QueuedTrack item = room.enqueueTrack(track, username);
+        commandProcessedCounter.increment();
+        log.info("Room [{}] user [{}] queued track [{}] '{}' (queue size: {})",
+                roomId, username, track.id(), track.title(), room.getQueueSize());
+        return item;
+    }
+
+    public Optional<QueuedTrack> skipTrack(String roomId, String userId) {
+        Room room = getRoomOrThrow(roomId);
+        validateAuthority(room, userId, "SKIP");
+        long now = clockSyncService.getCurrentServerEpochMs();
+        Optional<QueuedTrack> next = room.dequeueNextTrack(now);
+        commandProcessedCounter.increment();
+        if (next.isPresent()) {
+            log.info("Room [{}] skipped to next queued track [{}] '{}'", roomId, next.get().trackId(), next.get().title());
+        } else {
+            log.info("Room [{}] skip invoked but queue is empty", roomId);
+        }
+        return next;
+    }
+
+    public boolean removeQueuedTrack(String roomId, String userId, String queueId) {
+        Room room = getRoomOrThrow(roomId);
+        validateAuthority(room, userId, "REMOVE_QUEUED_TRACK");
+        boolean removed = room.removeQueuedTrack(queueId);
+        if (removed) {
+            commandProcessedCounter.increment();
+            log.info("Room [{}] removed queued item [{}] (remaining queue: {})", roomId, queueId, room.getQueueSize());
+        }
+        return removed;
+    }
+
+    private void validateAuthority(Room room, String userId, String action) {
+        if (!room.hasPlaybackAuthority(userId)) {
+            throw new SecurityException("User [" + userId + "] lacks authority to execute action '" + action + "' in room " + room.getRoomId());
         }
     }
 
     private String generateUniqueRoomId() {
-        for (int i = 0; i < 20; i++) {
+        for (int attempts = 0; attempts < 100; attempts++) {
             StringBuilder sb = new StringBuilder(ROOM_ID_LENGTH);
-            for (int j = 0; j < ROOM_ID_LENGTH; j++) {
+            for (int i = 0; i < ROOM_ID_LENGTH; i++) {
                 sb.append(ROOM_ID_CHARS.charAt(random.nextInt(ROOM_ID_CHARS.length())));
             }
             String candidate = sb.toString();
@@ -154,6 +268,6 @@ public class RoomService {
                 return candidate;
             }
         }
-        return UUID.randomUUID().toString().substring(0, ROOM_ID_LENGTH).toUpperCase();
+        return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 }
