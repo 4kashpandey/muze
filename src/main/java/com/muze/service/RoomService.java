@@ -198,6 +198,10 @@ public class RoomService {
         log.info("Room [{}] SEEK to {} ms at server time {} (epoch: {})", roomId, seekTargetMs, now, updated.epochSequence());
         return updated;
     }
+    public boolean verifyRoomAccess(String roomId, String passcode) {
+        Room room = getRoomOrThrow(roomId);
+        return room.verifyPasscode(passcode);
+    }
 
     public AnchorTimeline executeSelectTrack(String roomId, String userId, TrackMetadata track, boolean autoplay) {
         Room room = getRoomOrThrow(roomId);
