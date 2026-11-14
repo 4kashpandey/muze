@@ -65,8 +65,8 @@ public class AudiusService {
      * Searches Audius for tracks matching the query string.
      */
     public List<TrackMetadata> searchTracks(String query, int limit) {
-        if (query == null || query.isBlank()) {
-            return getTrendingTracks(limit);
+        if (query == null || query.trim().length() < 2) {
+            return Collections.emptyList();
         }
 
         String normalizedKey = query.trim().toLowerCase() + ":" + limit;
