@@ -1,0 +1,89 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+
+spring:
+  application:
+    name: muze
+  web:
+    resources:
+      cache:
+        period: 0
+        cachecontrol:
+          no-cache: true
+          must-revalidate: true
+  threads:
+    virtual:
+      enabled: true # Java 21 Project Loom virtual threads for ultra-high concurrency
+
+  # Database & Persistence (Default: Local persistent H2 file; PostgreSQL in Docker/Prod)
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:file:./data/muzedb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER:org.h2.Driver}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+
+# Synchronization Engine Tuning Parameters
+muze:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:muze-ultra-secure-jwt-signing-secret-key-32bytes-long!}
+      validity-hours: 24
+  sync:
+    drift-tolerance-ms: 40 # Below 40ms = In-band perceptual sync
+    soft-drift-limit-ms: 400 # 40ms - 400ms = Nudge tempo (1.02x / 0.98x)
+    # > 400ms = Hard seek snap
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    root: INFO
+    com.muze: DEBUG
+
+---
+# ==============================================================================
+# Production Profile: Activated via --spring.profiles.active=prod or Docker Compose
+# ==============================================================================
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DATABASE_URL:${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/muzedb}}
+    driver-class-name: org.postgresql.Driver
+    username: ${SPRING_DATASOURCE_USERNAME:muze}
+    password: ${SPRING_DATASOURCE_PASSWORD:muze}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: false # Strictly disabled in production
