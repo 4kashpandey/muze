@@ -1,0 +1,54 @@
+services:
+  # ----------------------------------------------------------------------------
+  # PostgreSQL Database Service
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: muze-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: muzedb
+      POSTGRES_USER: muze
+      POSTGRES_PASSWORD: muze_secure_password_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U muze -d muzedb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - muze-network
+
+  # ----------------------------------------------------------------------------
+  # Muze Spring Boot Application Service
+  # ----------------------------------------------------------------------------
+  muze-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: muze-server
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy # Waits until PostgreSQL is 100% ready to accept connections!
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/muzedb
+      SPRING_DATASOURCE_USERNAME: muze
+      SPRING_DATASOURCE_PASSWORD: muze_secure_password_2026
+      JWT_SECRET: muze-production-ultra-secure-jwt-signing-key-32bytes!
+    networks:
+      - muze-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  muze-network:
+    driver: bridge
