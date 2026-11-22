@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>muze. — Real-Time Shared Music Listening</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/app.css?v=7.4">
+</head>
+<body>
+
+    <!-- VIEW 1: PREMIUM SPLIT WELCOME & AUTH SCREEN -->
+    <section id="view-landing" class="welcome-screen">
+        <!-- Left Panel: Brand Atmosphere & Vinyl -->
+        <div class="welcome-left-panel">
+            <div class="welcome-left-top">
+                <div class="brand-monogram-wrap">
+                    <!-- Muze interwoven monogram: two overlapping rounded rectangles -->
+                    <svg class="brand-monogram" width="30" height="26" viewBox="0 0 30 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="3" width="12" height="20" rx="6" stroke="#F5F2EE" stroke-width="2.5"/>
+                        <rect x="11" y="3" width="12" height="20" rx="6" stroke="#DCA6BB" stroke-width="2.5"/>
+                    </svg>
+                    <span class="monogram-tag">LISTEN TOGETHER</span>
+                </div>
+            </div>
+
+            <div class="welcome-left-content">
+                <!-- Brand wordmark: custom SVG lettering for a unique symbol-type identity -->
+                <div class="welcome-brand-wordmark" aria-label="muze">
+                    <svg class="muze-wordmark-svg" viewBox="0 0 320 90" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <!-- m -->
+                        <path d="M8 72V28C8 28 8 20 16 20C24 20 24 28 24 28V52C24 52 24 60 32 60C40 60 40 52 40 52V28C40 28 40 20 48 20C56 20 56 28 56 28V72" stroke="#F5F2EE" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <!-- u -->
+                        <path d="M72 20V56C72 65 79 72 88 72C97 72 104 65 104 56V20" stroke="#F5F2EE" stroke-width="5.5" stroke-linecap="round"/>
+                        <!-- z — with diagonal slash for brand uniqueness -->
+                        <path d="M118 20H148L118 72H148" stroke="#DCA6BB" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <!-- e — open C-shape with a midbar -->
+                        <path d="M198 46C198 46 191 20 172 20C153 20 162 72 180 72C198 72 198 46 162 46" stroke="#F5F2EE" stroke-width="5.5" stroke-linecap="round"/>
+                        <!-- mauve accent dot -->
+                        <circle cx="210" cy="72" r="7" fill="#D8B0C7"/>
+                    </svg>
+                </div>
+
+                <h2 class="welcome-headline">Host a Muze session<span class="round-dot" aria-hidden="true"></span><br>Listen together<span class="round-dot" aria-hidden="true"></span></h2>
+                <p class="welcome-subtext">
+                    Create a Muze Lounge, invite friends, and enjoy the same tracks in real time<span class="round-dot" aria-hidden="true"></span> Discover public rooms, join private ones, and feel the vibe together<span class="round-dot" aria-hidden="true"></span>
+                </p>
+            </div>
+
+            <!-- Bottom: copyright only -->
+            <div class="welcome-left-bottom">
+                <div class="copyright-tag">© 2026 Muze</div>
+            </div>
+
+            <!-- Partially Cropped Concentric Groove Vinyl Record -->
+            <div class="vinyl-record-wrap" aria-hidden="true">
+                <svg class="vinyl-record" width="480" height="480" viewBox="0 0 480 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="240" cy="240" r="236" fill="#1B1F1D" stroke="#2A302C" stroke-width="1.5"/>
+                    <circle cx="240" cy="240" r="218" stroke="#2A302C" stroke-width="1"/>
+                    <circle cx="240" cy="240" r="202" stroke="#222724" stroke-width="1"/>
+                    <circle cx="240" cy="240" r="186" stroke="#2A302C" stroke-width="1"/>
+                    <circle cx="240" cy="240" r="170" stroke="#222724" stroke-width="1"/>
+                    <circle cx="240" cy="240" r="154" stroke="#2A302C" stroke-width="1"/>
+                    <circle cx="240" cy="240" r="138" stroke="#2A302C" stroke-width="1"/>
+                    <circle cx="240" cy="240" r="122" stroke="#222724" stroke-width="1"/>
+                    <circle cx="240" cy="240" r="106" stroke="#2A302C" stroke-width="1"/>
+                    <circle cx="240" cy="240" r="86" fill="url(#vinylLabelGradient)"/>
+                    <circle cx="240" cy="240" r="9" fill="#0F1110"/>
+                    <defs>
+                        <linearGradient id="vinylLabelGradient" x1="160" y1="160" x2="320" y2="320" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#E8C7D8"/>
+                            <stop offset="50%" stop-color="#D8B0C7"/>
+                            <stop offset="100%" stop-color="#C7A8C2"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Right Panel: Authentication Area -->
+        <div class="welcome-right-panel">
+            <div class="welcome-right-top">
+                <span class="subtle-badge">TUNE INTO MUZE</span>
+            </div>
+
+            <div class="welcome-auth-card">
+                <!-- Desktop-only: mirrored headline in right panel -->
+                <div class="auth-card-header">
+                    <span class="pink-badge-pill">JOIN A MUZE LOUNGE</span>
+                    <h2 class="auth-headline">Host a Muze session<span class="round-dot" aria-hidden="true"></span><br>Listen together<span class="round-dot" aria-hidden="true"></span></h2>
+                    <p class="auth-subtext">
+                        Create a Muze Lounge, invite friends, and enjoy the same tracks in real time<span class="round-dot" aria-hidden="true"></span> Discover public rooms, join private ones, and feel the vibe together<span class="round-dot" aria-hidden="true"></span>
+                    </p>
+                </div>
+
+                <!-- Sign Up / Sign In tab switcher — always visible -->
+                <div id="auth-mode-switch" class="auth-mode-switch">
+                    <button id="tab-signup" class="mode-tab active" type="button">Sign up</button>
+                    <button id="tab-login" class="mode-tab" type="button">Sign in</button>
+                </div>
+
+                <!-- Auth Form -->
+                <form id="auth-form" class="auth-form" onsubmit="return false;">
+                    <!-- Username: always visible -->
+                    <div class="form-field">
+                        <label for="auth-username" id="auth-username-label">Username</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">@</span>
+                            <input type="text" id="auth-username" placeholder="Choose your username" autocomplete="username" required>
+                        </div>
+                    </div>
+
+                    <!-- Email: signup only -->
+                    <div id="email-group" class="form-field hidden">
+                        <label for="auth-email">Email</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">✉</span>
+                            <input type="email" id="auth-email" placeholder="you@example.com" autocomplete="email">
+                        </div>
+                    </div>
+
+                    <!-- Password: both modes -->
+                    <div id="password-group" class="form-field">
+                        <label for="auth-password">Password</label>
+                        <div class="input-with-icon">
+                            <input type="password" id="auth-password" placeholder="••••••••" autocomplete="current-password">
+                            <button type="button" id="btn-toggle-password" class="btn-toggle-pwd" title="Toggle password visibility" aria-label="Toggle password visibility">
+                                <svg id="eye-icon-show" class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <svg id="eye-icon-hide" class="eye-icon hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="auth-error-msg" class="auth-error-banner hidden"></div>
+
+                    <button id="btn-enter-app" class="btn-primary-mauve" type="button">
+                        <span id="btn-enter-text">Sign up</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </form>
+
+                <div class="auth-divider">
+                    <span>or</span>
+                </div>
+
+                <!-- Guest Entry -->
+                <div class="guest-link-wrap">
+                    <button id="tab-guest" class="btn-guest-link" type="button">
+                        <span>Enter as guest</span>
+                        <span class="guest-arrow">↗</span>
+                    </button>
+                </div>
+
+                <div id="guest-hint" class="guest-notice-pill hidden">
+                    Guests can explore and join any active Muze Lounge with instant 1-click sync.
+                </div>
+
+                <!-- Legal: pushed to the very bottom -->
+                <p class="auth-legal-footer">
+                    By continuing, you agree to our <a href="#" onclick="return false;">Terms of Service</a> and acknowledge our <a href="#" onclick="return false;">Privacy Policy</a><span class="round-dot" aria-hidden="true"></span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- VIEWS 2 & 3: APP CONTAINER (Muze Lounges & Player) -->
+    <div id="lounge-container" class="lounge-page hidden">
+
+        <!-- ═══════════════════════════════════════════════════════
+             VIEW 2: DISCOVERY — Full-Page Lounges Browser
+             ═══════════════════════════════════════════════════════ -->
+        <section id="view-rooms" class="lounge-discovery">
+
+            <!-- Top Navigation Bar: Product Brand & User Profile -->
+            <nav class="lounge-nav">
+                <div class="lounge-nav-brand">
+                    <!-- Muze interwoven monogram -->
+                    <svg class="brand-monogram" width="28" height="24" viewBox="0 0 30 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="3" width="12" height="20" rx="6" stroke="#F5F2EE" stroke-width="2.5"/>
+                        <rect x="11" y="3" width="12" height="20" rx="6" stroke="#DCA6BB" stroke-width="2.5"/>
+                    </svg>
+                    <!-- Exact stylish muze brand wordmark matching the landing page curving & tilted 'e' -->
+                    <div class="nav-brand-wordmark" aria-label="muze">
+                        <svg class="nav-muze-svg" viewBox="0 0 225 90" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <!-- m -->
+                            <path d="M8 72V28C8 28 8 20 16 20C24 20 24 28 24 28V52C24 52 24 60 32 60C40 60 40 52 40 52V28C40 28 40 20 48 20C56 20 56 28 56 28V72" stroke="#F5F2EE" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- u -->
+                            <path d="M72 20V56C72 65 79 72 88 72C97 72 104 65 104 56V20" stroke="#F5F2EE" stroke-width="6" stroke-linecap="round"/>
+                            <!-- z with diagonal slash -->
+                            <path d="M118 20H148L118 72H148" stroke="#DCA6BB" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- e with curved open loop and midbar -->
+                            <path d="M198 46C198 46 191 20 172 20C153 20 162 72 180 72C198 72 198 46 162 46" stroke="#F5F2EE" stroke-width="6" stroke-linecap="round"/>
+                            <!-- signature mauve accent dot -->
+                            <circle cx="210" cy="72" r="7" fill="#D8B0C7"/>
+                        </svg>
+                    </div>
+                    <span class="nav-pipe" aria-hidden="true">|</span>
+                    <span class="nav-tagline-text">LISTEN TOGETHER</span>
+                </div>
+
+                <div class="lounge-nav-right">
+                    <!-- Action shortcuts (refresh & exit) -->
+                    <button id="btn-refresh-rooms" class="nav-icon-btn" title="Refresh room list">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    </button>
+                    <button id="btn-logout" class="nav-icon-btn nav-exit-btn" title="Sign Out">Exit</button>
+
+                    <!-- User Profile Circle & @username (decorative social style) -->
+                    <div class="nav-profile-badge" title="Logged in as @username">
+                        <span class="nav-avatar-circle" id="user-avatar">A</span>
+                        <span class="nav-username-text" id="greeting-username">@alex</span>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Discovery Hero: Welcome, muzer. + Tagline -->
+            <div class="discovery-hero">
+                <h1 class="discovery-welcome">
+                    <span class="welcome-text">Welcome,</span>
+                    <span class="hero-muzer-svg-wrap" aria-label="muzer.">
+                        <svg class="hero-muzer-svg" viewBox="0 0 274 90" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <!-- m with smooth arcs -->
+                            <path d="M8 72V28C8 28 8 20 16 20C24 20 24 28 24 28V52C24 52 24 60 32 60C40 60 40 52 40 52V28C40 28 40 20 48 20C56 20 56 28 56 28V72" stroke="#D8B0C7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- u with rounded bowl -->
+                            <path d="M72 20V56C72 65 79 72 88 72C97 72 104 65 104 56V20" stroke="#D8B0C7" stroke-width="6" stroke-linecap="round"/>
+                            <!-- z with brand diagonal slash in pure white -->
+                            <path d="M118 20H148L118 72H148" stroke="#F5F2EE" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- e tilted with characteristic midbar -->
+                            <path d="M198 46C198 46 191 20 172 20C153 20 162 72 180 72C198 72 198 46 162 46" stroke="#D8B0C7" stroke-width="6" stroke-linecap="round"/>
+                            <!-- r in harmonized vector curve -->
+                            <path d="M216 28V72" stroke="#D8B0C7" stroke-width="6" stroke-linecap="round"/>
+                            <path d="M216 44C216 34 224 28 236 28C242 28 248 31 250 33" stroke="#D8B0C7" stroke-width="6" stroke-linecap="round"/>
+                            <!-- signature mauve accent dot -->
+                            <circle cx="264" cy="72" r="7" fill="#D8B0C7"/>
+                        </svg>
+                    </span>
+                </h1>
+                <p class="discovery-tagline">Find your people, press play. There's a lounge waiting for your kind of night.</p>
+                <span id="greeting-badge" class="hidden"></span>
+            </div>
+
+            <!-- Action Cards Row: Host Muze Session + Join by Code -->
+            <div class="action-cards-row">
+
+                <!-- HOST CARD: Extended rectangular with pink button and partially hidden vinyl record -->
+                <div class="host-card">
+                    <div class="host-card-content">
+                        <h2 class="host-card-title">Good taste deserves company.</h2>
+                        <p class="host-card-sub">Bring your playlist, make the room your own.</p>
+                        <button id="btn-open-create-modal" class="btn-host-session">
+                            <span>Host a Muze session</span>
+                            <span class="btn-arrow-inline">→</span>
+                        </button>
+                    </div>
+
+                    <!-- Partially cropped concentric groove vinyl record (peeking from right edge like front page) -->
+                    <div class="host-card-vinyl" aria-hidden="true">
+                        <svg class="vinyl-deco" width="260" height="260" viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="130" cy="130" r="126" fill="#1B1F1D" stroke="#2A302C" stroke-width="1.5"/>
+                            <circle cx="130" cy="130" r="116" stroke="#222724" stroke-width="1"/>
+                            <circle cx="130" cy="130" r="104" stroke="#2A302C" stroke-width="1"/>
+                            <circle cx="130" cy="130" r="92" stroke="#222724" stroke-width="1"/>
+                            <circle cx="130" cy="130" r="80" stroke="#2A302C" stroke-width="1"/>
+                            <circle cx="130" cy="130" r="68" stroke="#222724" stroke-width="1"/>
+                            <circle cx="130" cy="130" r="56" stroke="#2A302C" stroke-width="1"/>
+                            <circle cx="130" cy="130" r="44" fill="url(#hostVinylGradient)"/>
+                            <circle cx="130" cy="130" r="6" fill="#0F1110"/>
+                            <defs>
+                                <radialGradient id="hostVinylGradient" cx="38%" cy="36%">
+                                    <stop offset="0%" stop-color="#E8C7D8"/>
+                                    <stop offset="55%" stop-color="#D8B0C7"/>
+                                    <stop offset="100%" stop-color="#C7A8C2"/>
+                                </radialGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- JOIN CARD: Direct Room ID Access -->
+                <div class="join-card">
+                    <h3 class="join-card-title">Have a room ID?</h3>
+                    <p class="join-card-sub">Your friends are just one room code away.</p>
+                    <div class="join-input-row">
+                        <div class="join-input-wrap">
+                            <span class="join-hash">#</span>
+                            <input type="text" id="direct-room-code" placeholder="Enter room ID" maxlength="8" autocomplete="off">
+                        </div>
+                        <button id="btn-direct-join" class="btn-join-code">Join</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- LIVE LOUNGES SECTION: Header and Strips List -->
+            <div class="live-section">
+                <div class="live-section-header">
+                    <div class="live-section-title-wrap">
+                        <h2 class="live-section-title">Live Muze Lounges</h2>
+                        <span id="active-rooms-count" class="hidden" style="display:none;"></span>
+                    </div>
+                </div>
+
+                <!-- Lounge Strips List: Rendered dynamically via app.js -->
+                <div id="active-rooms-grid" class="lounge-list">
+                    <div class="loading-state">Loading active lounges...</div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- VIEW 3: SYNCHRONIZED PLAYER ROOM (Full Product Integration) -->
+        <main id="view-player" class="player-container hidden">
+            <!-- Telemetry Diagnostics HUD -->
+            <div class="hud-panel">
+                <div class="hud-item">
+                    <span class="hud-label">RTT Latency</span>
+                    <span id="hud-rtt" class="hud-val">-- ms</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">Clock Skew (θ)</span>
+                    <span id="hud-offset" class="hud-val">-- ms</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">Sync Drift (Δ)</span>
+                    <span id="hud-delta" class="hud-val">-- ms</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">Phase Lock</span>
+                    <span id="hud-status" class="hud-pill pill-gray">CALIBRATING</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">Nudges</span>
+                    <span id="hud-corrections" class="hud-val">0</span>
+                </div>
+            </div>
+
+            <!-- Autoplay Blocked Notice -->
+            <div id="autoplay-notice" class="autoplay-alert hidden">
+                <div class="alert-icon">🔊</div>
+                <div class="alert-text">Browser blocked background audio. Click to start sync playback.</div>
+                <button id="btn-unmute" class="btn btn-sm btn-accent">Unmute & Sync</button>
+            </div>
+
+            <!-- Room Navigation Bar -->
+            <div class="room-topbar">
+                <div class="room-meta">
+                    <button id="btn-leave-room" class="btn btn-secondary btn-sm" title="Return to room browser">
+                        ← All Lounges
+                    </button>
+                    <span class="room-label">LOUNGE</span>
+                    <span id="display-room-id" class="room-code">------</span>
+                    <span id="display-room-type" class="type-pill public">PUBLIC</span>
+                    <span id="display-user-role" class="role-pill listener">LISTENER</span>
+                </div>
+                <button id="btn-copy-link" class="btn btn-secondary btn-sm" title="Share invite link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    <span>Copy Link</span>
+                </button>
+            </div>
+
+            <!-- Active Hero Music Player -->
+            <div class="hero-player">
+                <div class="hero-artwork-box">
+                    <img id="track-artwork" class="hero-artwork-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 24 24' fill='%23D8B0C7'><circle cx='12' cy='12' r='10' fill='%231B1F1D'/><circle cx='12' cy='12' r='3' fill='%23D8B0C7'/></svg>" alt="Album Cover">
+                </div>
+
+                <div class="hero-track-details">
+                    <div class="track-header">
+                        <div class="track-info-wrap">
+                            <h2 id="track-title">Connecting to lounge stream...</h2>
+                            <p id="track-artist">muze Audio Engine</p>
+                        </div>
+                        <span id="track-genre" class="hidden" style="display:none;"></span>
+                    </div>
+
+                    <!-- Progress Scrubber -->
+                    <div class="scrubber-container">
+                        <div id="progress-bar" class="scrubber-bar">
+                            <div id="progress-fill" class="scrubber-fill"></div>
+                        </div>
+                        <div class="time-row">
+                            <span id="time-current">0:00</span>
+                            <span id="time-total">3:00</span>
+                        </div>
+                    </div>
+
+                    <!-- Player Controls Row -->
+                    <div class="player-controls-row">
+                        <div class="volume-container">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.8">
+                        </div>
+
+                        <div class="center-controls">
+                            <button id="btn-play-pause" class="btn-play-pause" title="Play / Pause">
+                                <svg id="play-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                                <svg id="pause-icon" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="6" y="4" width="4" height="16"></rect>
+                                    <rect x="14" y="4" width="4" height="16"></rect>
+                                </svg>
+                            </button>
+
+                            <button id="btn-skip-track" class="btn-skip-track" title="Skip to next queued track">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                                    <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5"></line>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="host-authority-hint">
+                            <span id="host-hint-text">Host: Controls Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Room Playback Queue (FIFO) -->
+            <section class="queue-section">
+                <div class="section-heading">
+                    <div>
+                        <h3>Up Next</h3>
+                        <p class="section-sub">Shared playlist lined up for this session.</p>
+                    </div>
+                    <span id="queue-count-badge" class="count-badge">0 queued</span>
+                </div>
+                <div class="queue-container">
+                    <div id="queue-empty-msg" class="empty-state">No songs lined up yet. Search the catalog below to add tracks.</div>
+                    <ul id="queue-list" class="queue-list hidden"></ul>
+                </div>
+            </section>
+
+            <!-- Music Catalog & Search Section -->
+            <section class="catalog-section">
+                <div class="section-heading">
+                    <div>
+                        <h3>Search Muze Catalog</h3>
+                        <p class="section-sub">Find tracks and queue them for everyone in the lounge.</p>
+                    </div>
+                </div>
+
+                <!-- Search Input Bar -->
+                <div class="search-input-wrap">
+                    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="music-search-input" placeholder="Search songs or artists..." autocomplete="off">
+                    <button id="btn-clear-search" class="btn-clear-search hidden" title="Clear">✕</button>
+                </div>
+
+                <!-- Dynamic Track Results Grid -->
+                <div id="catalog-results" class="catalog-tracks-grid">
+                    <div class="search-hint-state">Search for your favorite tracks or artists to play in sync.</div>
+                </div>
+            </section>
+
+            <!-- Room Participants -->
+            <section class="participants-section">
+                <div class="section-heading">
+                    <h3>Lounge Listeners</h3>
+                    <span id="participant-count-badge" class="count-badge">1 active</span>
+                </div>
+                <ul id="participants-list" class="participants-list">
+                    <!-- Populated via WebSocket -->
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL 1: CREATE LOUNGE -->
+    <div id="modal-create-room" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Host a Muze Lounge</h3>
+                <button id="btn-close-create-modal" class="btn-icon">✕</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="modal-room-name">Lounge Title</label>
+                    <input type="text" id="modal-room-name" placeholder="e.g. Midnight Beats" value="My Muze Lounge">
+                </div>
+
+                <div class="input-group" style="margin-top: 14px;">
+                    <label>Lounge Visibility</label>
+                    <div class="visibility-toggle">
+                        <label class="radio-label">
+                            <input type="radio" name="room-visibility" value="public" checked>
+                            <span>Public (Anyone can discover & join)</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="room-visibility" value="private">
+                            <span>Private (Requires passcode)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="passcode-input-wrap" class="input-group hidden" style="margin-top: 14px;">
+                    <label for="modal-room-passcode">Lounge Passcode</label>
+                    <input type="password" id="modal-room-passcode" placeholder="Enter a 4-8 digit passcode">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn-cancel-create" class="btn btn-secondary">Cancel</button>
+                <button id="btn-confirm-create" class="btn btn-primary">Launch Lounge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: PRIVATE ROOM PASSCODE PROMPT -->
+    <div id="modal-passcode-prompt" class="modal-overlay hidden">
+        <div class="modal-card modal-sm">
+            <div class="modal-header">
+                <h3>Private Lounge Locked</h3>
+                <button id="btn-close-passcode-modal" class="btn-icon">✕</button>
+            </div>
+            
+            <div class="modal-body">
+                <p class="modal-desc">This lounge is private. Please enter the passcode provided by the host.</p>
+                <div class="input-group">
+                    <label for="input-prompt-passcode">Passcode</label>
+                    <input type="password" id="input-prompt-passcode" placeholder="Enter lounge passcode" autofocus>
+                </div>
+                <div id="passcode-error-msg" class="error-text hidden">Incorrect passcode. Please try again.</div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn-cancel-passcode" class="btn btn-secondary">Cancel</button>
+                <button id="btn-submit-passcode" class="btn btn-primary">Unlock & Join</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts with Cache Busting -->
+    <script src="/js/clock-sync.js?v=7.4"></script>
+    <script src="/js/audio-drift-engine.js?v=7.4"></script>
+    <script src="/js/ws-client.js?v=7.4"></script>
+    <script src="/js/app.js?v=7.4"></script>
+</body>
+</html>
