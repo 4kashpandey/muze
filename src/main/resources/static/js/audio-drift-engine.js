@@ -165,14 +165,26 @@ class AudioDriftEngine {
             // Zone 2: 50ms - 400ms -> Gentle pitch-preserving tempo nudge (smooth, NO audio chops)
             this.syncState = 'SOFT_NUDGE';
             if (delta < 0) {
+                // Audio lagging -> gently speed up (1.05x)
+                this.audio.playbackRate = 1.05;
+            } else {
+                // Audio leading -> gently slow down (0.95x)
+                this.audio.playbackRate = 0.95;
+            }
+            this.driftCorrectionCount++;
+        }
+        else if (absDelta <= 200) {
+            // Zone 2: 50ms - 400ms -> Gentle pitch-preserving tempo nudge (smooth, NO audio chops)
+            this.syncState = 'SOFT_NUDGE';
+            if (delta < 0) {
                 // Audio lagging -> gently speed up (1.03x)
                 this.audio.playbackRate = 1.03;
             } else {
-                // Audio leading -> gently slow down (0.97x)
+                // Audio leading -> gently slow down (0.93x)
                 this.audio.playbackRate = 0.97;
             }
             this.driftCorrectionCount++;
-        } else {
+        }else {
             // Zone 3: > 400ms -> True desync: Hard Snap seek with 3-second cooldown
             const now = Date.now();
             if (now - this.lastHardSnapTime > 3000) {

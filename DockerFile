@@ -1,0 +1,47 @@
+# ==============================================================================
+# STAGE 1: Build & Package with Maven
+# ==============================================================================
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
+
+WORKDIR /build
+
+# Copy Maven descriptor first (utilizes Docker layer caching for dependencies)
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy application source code and compile
+COPY src ./src
+RUN mvn clean package -DskipTests -B
+
+# ==============================================================================
+# STAGE 2: Production JRE Runtime
+# ==============================================================================
+FROM eclipse-temurin:21-jre-jammy
+
+WORKDIR /app
+
+# Security Best Practice: Create a non-root unprivileged user and group
+RUN groupadd -g 1001 muze && \
+    useradd -u 1001 -g muze -s /bin/bash -m muze
+
+# Copy only the compiled JAR artifact from the builder stage
+COPY --from=builder /build/target/*.jar app.jar
+
+# Ensure the unprivileged user owns the application directory
+RUN chown -R muze:muze /app
+
+# Switch to non-root execution
+USER muze
+
+# Expose HTTP & WebSocket port
+EXPOSE 8080
+
+# Environment variables with sensible production defaults
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV JAVA_OPTS="-XX:+UseZGC -XX:+ZGenerational -XX:MaxRAMPercentage=75.0"
+
+# Healthcheck to verify the container is alive via Spring Boot Actuator
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

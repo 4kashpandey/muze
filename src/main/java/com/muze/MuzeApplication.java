@@ -9,5 +9,4 @@ public class MuzeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MuzeApplication.class, args);
 	}
-
 }
